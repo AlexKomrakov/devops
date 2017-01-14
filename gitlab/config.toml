@@ -1,0 +1,16 @@
+concurrent = 1
+check_interval = 0
+
+[[runners]]
+  name = "9b0970067ee1"
+  url = "http://gitlab.example.com"
+  token = "e1a7da99c5bee7d79922cbeb0c7177"
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "php:7"
+    privileged = false
+    disable_cache = false
+    volumes = ["/cache"]
+    links = ["gitlab_web_1:gitlab.example.com"]
+  [runners.cache]

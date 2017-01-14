@@ -1,0 +1,8 @@
+version: '2'
+services:
+  web:
+    image: rancher/server:v1.3.0
+    ports:
+      - 80:8080
+    volumes:
+      - ./mysql:/var/lib/mysql
