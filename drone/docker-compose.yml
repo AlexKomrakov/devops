@@ -1,0 +1,53 @@
+version: '2'
+services:
+  server:
+    image: drone/drone:0.4
+    environment:
+      DATABASE_CONFIG: postgres://drone:password@db:5432/drone?sslmode=disable
+      DATABASE_DRIVER: postgres
+      DRONE_ADMIN: admin
+      DRONE_BITBUCKET: 'true'
+      DRONE_BITBUCKET_CLIENT: client
+      DRONE_BITBUCKET_SECRET: secret
+      DRONE_DEBUG: 'true'
+      DRONE_OPEN: 'true'
+      DRONE_SECRET: randomsecret
+      DRONE_SERVER: http://server:8000
+      PLUGIN_FILTER: plugins
+      REMOTE_CONFIG: https://bitbucket.org?client_id=client&client_secret=secret&open=true&orgs=myorg&redirect_uri=http://drone.local/authorize
+      REMOTE_DRIVER: bitbucket
+    volumes:
+    - /root/ci/data/drone:/var/lib/drone
+    - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+    - 8000:8000/tcp
+  worker1:
+    privileged: true
+    image: jpetazzo/dind
+    environment:
+      PORT: '4444'
+    stdin_open: true
+    tty: true
+    ports:
+    - 32768:4444/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  worker2:
+    privileged: true
+    image: jpetazzo/dind
+    environment:
+      PORT: '4444'
+    stdin_open: true
+    tty: true
+    ports:
+    - 32769:4444/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  db:
+    image: postgres:9.5
+    environment:
+      POSTGRES_DB: drone
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: drone
+    volumes:
+    - /root/ci/data:/var/lib/postgresql/data
