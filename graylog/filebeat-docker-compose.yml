@@ -1,0 +1,12 @@
+version: '2'
+services:
+  filebeat:
+    image: prima/filebeat:latest
+    stdin_open: true
+    volumes:
+    - /var/rancher/containers/filebeat.yml:/filebeat.yml
+    - /var/rancher/containers/:/var/rancher/containers/
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+
